@@ -23,7 +23,7 @@ myMax :: Int -> Int -> Int
 myMax x y | x > y = x
         | otherwise = y
 
-myTuple :: Int -> Int -> (Int, Int)
+myTuple :: a -> b -> (a, b)
 myTuple x y = (x, y)
 
 myTruple :: a -> b -> c -> (a, b, c)
@@ -59,5 +59,49 @@ myNth (_:xs) nth | (nth > myLength xs || nth < 0) = error "too large or negative
 myTake :: Int -> [a] -> [a]
 myTake _ [] = error "empty list"
 myTake 0 _ = []
-myTake nth (x:xs) | (nth > myLength xs || nth < 0) = error "too large or negative"
+myTake nth (x:xs) | (nth > myLength xs || nth < 0) = (x:xs)
                 | otherwise = x : myTake (nth - 1) xs
+
+myDrop :: Int -> [a] -> [a] -- TODO: to finish
+myDrop _ [] = error "empty list"
+myDrop 0 _ = []
+myDrop nth (x:xs) | (nth > myLength xs || nth < 0) = []
+                | otherwise = myDrop (nth - 1) xs
+
+myAppend :: [a] -> [a] -> [a]
+myAppend [] [] = error "empty list"
+myAppend (x:xs) [] = x:xs
+myAppend [] (y:ys) = y:ys
+myAppend (x:xs) (y:ys) = x : myAppend xs (y:ys)
+
+myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse (x:xs) = myAppend (myReverse xs) [x]
+
+myInit :: [a] -> [a]
+myInit [] = []
+myInit (x:xs) = myTake (myLength (x:xs) - 1) (x:xs)
+
+myLast :: [a] -> a
+myLast [] = error "empty list"
+myLast [x] = x
+myLast (x:xs) = myLast xs
+
+myZip :: [a] -> [b] -> [(a, b)]
+myZip [] [] = []
+myZip (x:xs) (y:ys) = (x, y) : myZip xs ys
+
+myUnzip :: [(a, b)] -> ([a], [b])
+myUnzip ([]) = ([], [])
+myUnzip ((x1, x2):xs) = 
+    let tupleIntermediaire@(l1, l2) = myUnzip xs
+     in (x1 : l1, x2 : l2)
+
+myMap :: (a -> b) -> [a] -> [b]
+myMap _ [] = []
+myMap lambda (x:xs) = lambda x : myMap lambda xs
+
+myFilter :: (a -> Bool) -> [a] -> [a]
+myFilter lambda [] = []
+myFilter lambda (x:xs) | lambda x = x : myFilter lambda xs
+                    | otherwise = myFilter lambda xs
