@@ -62,11 +62,11 @@ myTake 0 _ = []
 myTake nth (x:xs) | (nth > myLength xs || nth < 0) = (x:xs)
                 | otherwise = x : myTake (nth - 1) xs
 
-myDrop :: Int -> [a] -> [a] -- TODO: to finish
+myDrop :: Int -> [a] -> [a]
 myDrop _ [] = error "empty list"
 myDrop 0 _ = []
 myDrop nth (x:xs) | (nth > myLength xs || nth < 0) = []
-                | otherwise = myDrop (nth - 1) xs
+                | otherwise = myReverse (myTake ((myLength (x:xs)) - nth) (myReverse (x:xs)))
 
 myAppend :: [a] -> [a] -> [a]
 myAppend [] [] = error "empty list"
@@ -105,3 +105,20 @@ myFilter :: (a -> Bool) -> [a] -> [a]
 myFilter lambda [] = []
 myFilter lambda (x:xs) | lambda x = x : myFilter lambda xs
                     | otherwise = myFilter lambda xs
+
+myUnfilter :: (a -> Bool) -> [a] -> [a]
+myUnfilter lambda [] = []
+myUnfilter lambda (x:xs) | lambda x == False = x : myUnfilter lambda xs
+                    | otherwise = myUnfilter lambda xs
+
+myFoldl :: (b -> a -> b) -> b -> [a] -> b
+myFoldl lambda x [] = x
+myFoldl lambda x (y:ys) = myFoldl lambda (lambda x y) ys
+
+myFoldr :: (b -> a -> b) -> b -> [a] -> b
+myFoldr _ x [] = x
+myFoldr lambda x (y:ys) = lambda (myFoldr lambda x ys) y
+
+myPartition :: (a -> Bool) -> [a] -> ([a], [a])
+myPartition lambda [] = ([], [])
+myPartition lambda (x:xs) = (myFilter lambda (x:xs), myUnfilter lambda (x:xs))
