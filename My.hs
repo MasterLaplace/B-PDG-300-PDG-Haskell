@@ -53,7 +53,7 @@ myLength (_:xs) = 1 + myLength xs
 myNth :: [a] -> Int -> a
 myNth [] _ = error "empty list"
 myNth (x:_) 0 = x
-myNth (_:xs) nth | nth > myLength xs || nth < 0 = error "too large or negative"
+myNth (_:xs) nth | nth > myLength xs || nth < 0 = error "too large or neg"
                 | otherwise = myNth xs (nth - 1)
 
 myTake :: Int -> [a] -> [a]
@@ -66,7 +66,7 @@ myDrop :: Int -> [a] -> [a]
 myDrop _ [] = error "empty list"
 myDrop 0 _ = []
 myDrop nth (x:xs) | nth > myLength xs || nth < 0 = []
-                | otherwise = myReverse (myTake (myLength (x:xs) - nth) (myReverse (x:xs)))
+  | otherwise = myReverse $ myTake (myLength (x:xs) - nth) (myReverse (x:xs))
 
 myAppend :: [a] -> [a] -> [a]
 myAppend [] [] = []
