@@ -69,7 +69,7 @@ myDrop nth (x:xs) | (nth > myLength xs || nth < 0) = []
                 | otherwise = myReverse (myTake ((myLength (x:xs)) - nth) (myReverse (x:xs)))
 
 myAppend :: [a] -> [a] -> [a]
-myAppend [] [] = error "empty list"
+myAppend [] [] = []
 myAppend (x:xs) [] = x:xs
 myAppend [] (y:ys) = y:ys
 myAppend (x:xs) (y:ys) = x : myAppend xs (y:ys)
@@ -122,3 +122,12 @@ myFoldr lambda x (y:ys) = lambda (myFoldr lambda x ys) y
 myPartition :: (a -> Bool) -> [a] -> ([a], [a])
 myPartition lambda [] = ([], [])
 myPartition lambda (x:xs) = (myFilter lambda (x:xs), myUnfilter lambda (x:xs))
+
+myQuickSort :: (a -> a -> Bool) -> [a] -> [a]
+myQuickSort superieur [] = []
+myQuickSort superieur (x:xs) =
+     -- superieurAX :: a -> Bool
+    let superieurAX x2 = superieur x x2
+        tupleIntermediaire@(gauche, droite) = myPartition superieurAX xs
+     in myAppend (myQuickSort superieur gauche) $ x:(myQuickSort superieur droite)
+
