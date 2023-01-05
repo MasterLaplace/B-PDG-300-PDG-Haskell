@@ -88,7 +88,8 @@ myLast [x] = x
 myLast (x:xs) = myLast xs
 
 myZip :: [a] -> [b] -> [(a, b)]
-myZip [] [] = []
+myZip [] _ = []
+myZip _ [] = []
 myZip (x:xs) (y:ys) = (x, y) : myZip xs ys
 
 myUnzip :: [(a, b)] -> ([a], [b])
