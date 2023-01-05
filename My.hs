@@ -13,7 +13,7 @@ myIsNeg x = x < 0
 
 myAbs :: Int -> Int
 myAbs x | x > 0 = x
-        | otherwise = (x * (-1))
+        | otherwise = x * (-1)
 
 myMin :: Int -> Int -> Int
 myMin x y | x < y = x
@@ -53,20 +53,20 @@ myLength (_:xs) = 1 + myLength xs
 myNth :: [a] -> Int -> a
 myNth [] _ = error "empty list"
 myNth (x:_) 0 = x
-myNth (_:xs) nth | (nth > myLength xs || nth < 0) = error "too large or negative"
+myNth (_:xs) nth | nth > myLength xs || nth < 0 = error "too large or negative"
                 | otherwise = myNth xs (nth - 1)
 
 myTake :: Int -> [a] -> [a]
 myTake _ [] = error "empty list"
 myTake 0 _ = []
-myTake nth (x:xs) | (nth > myLength xs || nth < 0) = (x:xs)
+myTake nth (x:xs) | nth > myLength xs || nth < 0 = x:xs
                 | otherwise = x : myTake (nth - 1) xs
 
 myDrop :: Int -> [a] -> [a]
 myDrop _ [] = error "empty list"
 myDrop 0 _ = []
-myDrop nth (x:xs) | (nth > myLength xs || nth < 0) = []
-                | otherwise = myReverse (myTake ((myLength (x:xs)) - nth) (myReverse (x:xs)))
+myDrop nth (x:xs) | nth > myLength xs || nth < 0 = []
+                | otherwise = myReverse (myTake (myLength (x:xs) - nth) (myReverse (x:xs)))
 
 myAppend :: [a] -> [a] -> [a]
 myAppend [] [] = []
@@ -79,7 +79,7 @@ myReverse [] = []
 myReverse (x:xs) = myAppend (myReverse xs) [x]
 
 myInit :: [a] -> [a]
-myInit [] = []
+myInit [] = error "empty list"
 myInit (x:xs) = myTake (myLength (x:xs) - 1) (x:xs)
 
 myLast :: [a] -> a
@@ -92,7 +92,7 @@ myZip [] [] = []
 myZip (x:xs) (y:ys) = (x, y) : myZip xs ys
 
 myUnzip :: [(a, b)] -> ([a], [b])
-myUnzip ([]) = ([], [])
+myUnzip [] = ([], [])
 myUnzip ((x1, x2):xs) = 
     let tupleIntermediaire@(l1, l2) = myUnzip xs
      in (x1 : l1, x2 : l2)
@@ -128,6 +128,5 @@ myQuickSort superieur [] = []
 myQuickSort superieur (x:xs) =
      -- superieurAX :: a -> Bool
     let superieurAX x2 = superieur x x2
-        tupleIntermediaire@(gauche, droite) = myPartition superieurAX xs
-     in myAppend (myQuickSort superieur gauche) $ x:(myQuickSort superieur droite)
-
+        tupleIntermediaire@(left, right) = myPartition superieurAX xs
+     in myAppend (myQuickSort superieur left) $ x:myQuickSort superieur right
