@@ -24,3 +24,12 @@ safeSucc :: Maybe Int -> Maybe Int
 safeSucc Nothing = Nothing
 safeSucc (Just x) = Just (x + 1)
 
+myLookup :: Eq a => a -> [(a, b)] -> Maybe b
+myLookup a [] = Nothing
+myLookup a ((x1, x2):xs) | x1 == a = Just x2
+        | otherwise = myLookup a xs
+
+maybeDo :: (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
+maybeDo lambda Nothing _ = Nothing
+maybeDo lambda _ Nothing = Nothing
+maybeDo lambda (Just x) (Just y) = Just lambda <*>Just x <*> Just y
