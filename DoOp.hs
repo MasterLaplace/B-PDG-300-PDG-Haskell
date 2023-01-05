@@ -9,6 +9,11 @@ myFoldl :: (b -> a -> b) -> b -> [a] -> b
 myFoldl lambda x [] = x
 myFoldl lambda x (y:ys) = myFoldl lambda (lambda x y) ys
 
+myAppend :: [a] -> [a] -> [a]
+myAppend [] [] = []
+myAppend (x:xs) [] = x:xs
+myAppend [] (y:ys) = y:ys
+myAppend (x:xs) (y:ys) = x : myAppend xs (y:ys)
 
 myElem :: Eq a => a -> [a] -> Bool
 myElem y = myFoldl (\acc x -> (x == y) || acc) False
@@ -49,3 +54,12 @@ readInt (x:xs) | isNum (x:xs) = Just (read (x:xs) :: Int)
 getLineLength :: IO Int
 getLineLength = do length <$> getLine
 
+concatLines :: Int -> IO String
+concatLines 0 = return ""
+concatLines n = do
+    line <- getLine
+    concat <- concatLines (n - 1)
+    return (myAppend line concat)
+
+getInt :: IO (Maybe Int)
+getInt = do readInt <$> getLine
