@@ -54,6 +54,11 @@ readInt (x:xs) | isNum (x:xs) = Just (read (x:xs) :: Int)
 getLineLength :: IO Int
 getLineLength = do length <$> getLine
 
+printAndGetLength :: String -> IO Int
+printAndGetLength x = do
+            putStrLn x
+            return (length x)
+
 concatLines :: Int -> IO String
 concatLines 0 = return ""
 concatLines n = do
