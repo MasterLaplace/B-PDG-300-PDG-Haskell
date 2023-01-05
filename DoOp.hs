@@ -52,12 +52,22 @@ readInt (x:xs) | isNum (x:xs) = Just (read (x:xs) :: Int)
     | otherwise = Nothing
 
 getLineLength :: IO Int
-getLineLength = do length <$> getLine
+getLineLength = length <$> getLine
 
 printAndGetLength :: String -> IO Int
 printAndGetLength x = do
             putStrLn x
             return (length x)
+
+printBox :: Int -> IO ()
+printBox x | x <= 0 = return ()
+        | x == 1 = putStrLn "++"
+        | otherwise =
+        let fill = "+" ++ replicate (x * 2 - 2) '-' ++ "+"
+            empty = "|" ++ replicate (x * 2 - 2) ' ' ++ "|"
+        in putStrLn fill >>
+        sequence (replicate (x - 2) (putStrLn empty)) >>
+        putStrLn fill
 
 concatLines :: Int -> IO String
 concatLines 0 = return ""
