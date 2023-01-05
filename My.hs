@@ -116,9 +116,9 @@ myFoldl :: (b -> a -> b) -> b -> [a] -> b
 myFoldl lambda x [] = x
 myFoldl lambda x (y:ys) = myFoldl lambda (lambda x y) ys
 
-myFoldr :: (b -> a -> b) -> b -> [a] -> b
+myFoldr :: (a -> b -> b) -> b -> [a] -> b
 myFoldr _ x [] = x
-myFoldr lambda x (y:ys) = lambda (myFoldr lambda x ys) y
+myFoldr lambda x (y:ys) = lambda y (myFoldr lambda x ys)
 
 myPartition :: (a -> Bool) -> [a] -> ([a], [a])
 myPartition lambda [] = ([], [])
@@ -130,4 +130,4 @@ myQuickSort superieur (x:xs) =
      -- superieurAX :: a -> Bool
     let superieurAX x2 = superieur x x2
         tupleIntermediaire@(left, right) = myPartition superieurAX xs
-     in myAppend (myQuickSort superieur left) $ x:myQuickSort superieur right
+     in myAppend (myQuickSort superieur right) $ x:myQuickSort superieur left
