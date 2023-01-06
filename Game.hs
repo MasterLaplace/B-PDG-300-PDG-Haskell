@@ -9,7 +9,7 @@ instance Show Item where
 data Mob = Mummy
     | Skeleton { item :: Item }
     | Wicth { maybitem :: Maybe Item}
-    deriving (Eq, Show)
+    deriving (Eq)
 
 createMummy :: Mob -- a Mummy
 createMummy = Mummy
@@ -51,3 +51,24 @@ equip :: Item -> Mob -> Maybe Mob
 equip item Mummy = Nothing
 equip x (Skeleton item2) = Just (Skeleton item2) {item=x}
 equip x (Wicth mbItem) = Just (Wicth mbItem) {maybitem=Just x}
+
+instance Show Mob where
+    show :: Mob -> String
+    show Mummy = "mummy"
+    show (Skeleton Bow) = "doomed archer"
+    show (Skeleton Sword) = "dead knight"
+    show (Skeleton i) = "skeleton holding a " ++ show i
+    show (Wicth Nothing) = "witch"
+    show (Wicth (Just MagicWand)) = "sorceress"
+    show (Wicth (Just i)) = "witch holding a " ++ show i
+
+class HasItem f where
+    getItem :: f -> Maybe Item
+    hasItem :: f -> Bool
+    hasItem x | getItem x == Nothing = False
+            | otherwise = True
+
+instance HasItem Mob where
+    getItem Mummy = Nothing
+    getItem (Skeleton item) = Just item
+    getItem (Wicth maybitem) = maybitem
