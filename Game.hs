@@ -1,7 +1,6 @@
 data Item = Sword | Bow | MagicWand deriving (Eq)
 
 instance Show Item where
-    show :: Item -> String
     show Sword = "sword"
     show Bow = "bow"
     show MagicWand = "magic wand"
@@ -53,7 +52,6 @@ equip x (Skeleton item2) = Just (Skeleton item2) {item=x}
 equip x (Wicth mbItem) = Just (Wicth mbItem) {maybitem=Just x}
 
 instance Show Mob where
-    show :: Mob -> String
     show Mummy = "mummy"
     show (Skeleton Bow) = "doomed archer"
     show (Skeleton Sword) = "dead knight"
