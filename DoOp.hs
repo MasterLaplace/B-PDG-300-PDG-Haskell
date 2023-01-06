@@ -5,6 +5,9 @@
 -- DoOp
 -}
 
+import System.Directory.Internal.Prelude (getArgs)
+import System.Exit (exitWith, ExitCode (..), exitSuccess)
+
 myFoldl :: (b -> a -> b) -> b -> [a] -> b
 myFoldl lambda x [] = x
 myFoldl lambda x (y:ys) = myFoldl lambda (lambda x y) ys
@@ -46,10 +49,18 @@ maybeDo lambda (Just x) (Just y) = Just lambda <*>Just x <*> Just y
 isNum :: [Char] -> Bool
 isNum = foldr (\ x -> (&&) (myElem x "-0123456789")) True
 
+isOperat :: [Char] -> Bool
+isOperat = foldr (\ x -> (&&) (myElem x "+-*/%")) True
+
 readInt :: [Char] -> Maybe Int
 readInt [] = Nothing
 readInt (x:xs) | isNum (x:xs) = Just (read (x:xs) :: Int)
     | otherwise = Nothing
+
+intInt :: [Char] -> Int
+intInt [] = 0
+intInt (x:xs) | isNum (x:xs) = read (x:xs) :: Int
+    | otherwise = 0
 
 getLineLength :: IO Int
 getLineLength = length <$> getLine
@@ -78,3 +89,35 @@ concatLines n = do
 
 getInt :: IO (Maybe Int)
 getInt = do readInt <$> getLine
+
+checkArgs :: [String] -> Int -> Bool
+checkArgs [] 0 = True
+checkArgs [] _ = False
+checkArgs (x:xs) nb | odd nb && isNum x = checkArgs xs (nb - 1)
+                    | even nb && isOperat x = checkArgs xs (nb - 1)
+                    | otherwise = False
+
+calculListD :: [String] -> IO ()
+calculListD [] = return ()
+calculListD (x:xs) | (x:xs)!!1 == "*" = putStrLn (show (intInt ((x:xs)!!0)
+                * intInt ((x:xs)!!2)))
+                | (x:xs)!!1 == "%" = putStrLn (show (intInt ((x:xs)!!0)
+                `mod` intInt ((x:xs)!!2)))
+                | otherwise = putStrLn "Invalid"
+
+calculListS :: [String] -> IO ()
+calculListS [] = return ()
+calculListS (x:xs) | (x:xs)!!1 == "+" = putStrLn (show (intInt ((x:xs)!!0)
+                + intInt ((x:xs)!!2)))
+                | (x:xs)!!1 == "-" = putStrLn (show (intInt ((x:xs)!!0)
+                - intInt ((x:xs)!!2)))
+                | (x:xs)!!1 == "/" = putStrLn (show (intInt ((x:xs)!!0)
+                `div` intInt ((x:xs)!!2)))
+                | otherwise = calculListD (x:xs)
+
+main :: IO ()
+main = do 
+  args <- getArgs
+  if checkArgs args 3
+    then calculListS args >> exitSuccess
+    else exitWith (ExitFailure 84)
