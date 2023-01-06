@@ -1,3 +1,10 @@
+{-
+-- EPITECH PROJECT, 2023
+-- B-PDG-300-REN-3-1-PDGD03-guillaume.papineau
+-- File description:
+-- Game
+-}
+
 data Item = Sword | Bow | MagicWand deriving (Eq)
 
 instance Show Item where
@@ -6,24 +13,24 @@ instance Show Item where
     show MagicWand = "magic wand"
 
 data Mob = Mummy
-    | Skeleton { item :: Item }
-    | Wicth { maybitem :: Maybe Item}
+    | Skeleton Item 
+    | Wicth (Maybe Item)
     deriving (Eq)
 
 createMummy :: Mob -- a Mummy
 createMummy = Mummy
 
 createArcher :: Mob -- a Skeleton holding a Bow
-createArcher = Skeleton {item=Bow}
+createArcher = Skeleton Bow
 
 createKnight :: Mob -- a Skeleton holding a Sword
-createKnight = Skeleton {item=Sword}
+createKnight = Skeleton Sword
 
 createWitch :: Mob -- a Witch holding Nothing
-createWitch = Wicth {maybitem=Nothing}
+createWitch = Wicth Nothing
 
 createSorceress :: Mob -- a Witch holding a MagicWand
-createSorceress = Wicth {maybitem=Just MagicWand}
+createSorceress = Wicth (Just MagicWand)
 
 myStrCmp :: String -> String -> Bool
 myStrCmp [] [] = True
@@ -47,9 +54,9 @@ create "sorceress" = Just createSorceress
 create _ = Nothing
 
 equip :: Item -> Mob -> Maybe Mob
-equip item Mummy = Nothing
-equip x (Skeleton item2) = Just (Skeleton item2) {item=x}
-equip x (Wicth mbItem) = Just (Wicth mbItem) {maybitem=Just x}
+equip x (Skeleton item2) = Just (Skeleton x)
+equip x (Wicth mbItem) = Just (Wicth (Just x))
+equip _ _ = Nothing
 
 instance Show Mob where
     show Mummy = "mummy"
@@ -67,6 +74,6 @@ class HasItem f where
             | otherwise = True
 
 instance HasItem Mob where
-    getItem Mummy = Nothing
     getItem (Skeleton item) = Just item
     getItem (Wicth maybitem) = maybitem
+    getItem _ = Nothing
