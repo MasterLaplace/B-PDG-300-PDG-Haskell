@@ -70,8 +70,8 @@ printAndGetLength x = putStrLn x >>
             return (length x)
 
 printBox :: Int -> IO ()
+printBox 1 = putStrLn "++"
 printBox x | x <= 0 = return ()
-        | x == 1 = putStrLn "++"
         | otherwise =
         let fill = "+" ++ replicate (x * 2 - 2) '-' ++ "+"
             empty = "|" ++ replicate (x * 2 - 2) ' ' ++ "|"
