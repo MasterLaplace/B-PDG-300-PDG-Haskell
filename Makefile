@@ -1,6 +1,6 @@
 ##
-## ME PROJECT, 2022
-## DEN-GINER-Master-Laplace
+## EPITECH PROJECT, 2023
+## B-PDG-300-REN-3-1-PDGD02-guillaume.papineau
 ## File description:
 ## Makefile
 ##

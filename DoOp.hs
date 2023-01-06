@@ -66,8 +66,7 @@ getLineLength :: IO Int
 getLineLength = length <$> getLine
 
 printAndGetLength :: String -> IO Int
-printAndGetLength x = do
-            putStrLn x
+printAndGetLength x = putStrLn x >>
             return (length x)
 
 printBox :: Int -> IO ()
@@ -88,7 +87,7 @@ concatLines n = do
     return (myAppend line concat)
 
 getInt :: IO (Maybe Int)
-getInt = do readInt <$> getLine
+getInt = readInt <$> getLine
 
 checkArgs :: [String] -> Int -> Bool
 checkArgs [] 0 = True
@@ -117,7 +116,7 @@ calculListS (x:xs) | (x:xs)!!1 == "+" = putStrLn (show (intInt ((x:xs)!!0)
 
 main :: IO ()
 main = do 
-  args <- getArgs
-  if checkArgs args 3
-    then calculListS args >> exitSuccess
+  av <- getArgs
+  if checkArgs av 3 && ((av!!1 /= "/" && av!!1 /= "%") || av!!2 /= "0")
+    then calculListS av >> exitSuccess
     else exitWith (ExitFailure 84)
