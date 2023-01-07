@@ -107,9 +107,8 @@ myFilter x (y: sy) | x y = y :myFilter x sy
 
 myUnfilter :: (a -> Bool) -> [a] -> [a]
 myUnfilter lambda [] = []
-myUnfilter lambda (x:xs) | lambda x == False = x : myUnfilter lambda xs
+myUnfilter lambda (x:xs) | not (lambda x) = x : myUnfilter lambda xs
                     | otherwise = myUnfilter lambda xs
-
 myFoldl :: (b -> a -> b) -> b -> [a] -> b
 myFoldl lambda x [] = x
 myFoldl lambda x (y:ys) = myFoldl lambda (lambda x y) ys
@@ -166,7 +165,7 @@ isOperat = foldr (\ x -> (&&) (myElem x "+-*/%")) True
 
 readInt :: [Char] -> Maybe Int
 readInt [] = Nothing
-readInt n = if all myIsDigit n == True then Just (read n :: Int) else Nothing
+readInt n = if all myIsDigit n then Just (read n :: Int) else Nothing
 
 isNum :: [Char] -> Bool
 isNum = foldr (\ x -> (&&) (myElem x "-0123456789")) True
