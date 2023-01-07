@@ -17,7 +17,7 @@ RM = rm -f
 FIND = find -name
 
 SRC		=   src/My.hs 	\
-			src/core.hs \
+			src/Core.hs \
 
 NAME	=	pushswap_checker
 
