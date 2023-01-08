@@ -11,7 +11,7 @@ import My (isNum, myInList, readInt, intInt)
 import Data.List (sort)
 
 main :: IO ()
-main = do 
+main = do
     av <- getArgs
     str <- getLine
     if checkArgs av && checkLines (words str)
@@ -25,8 +25,8 @@ checkArgs (x:xs) | isNum x && x /= "-" = checkArgs xs
 
 checkLines :: [String] -> Bool
 checkLines [] = True
-checkLines (x:xs) 
-    | myInList 
+checkLines (x:xs)
+    | myInList
     ["pa", "pb", "sa", "sb", "sc", "ra", "rb", "rr", "rra", "rrb", "rrr"] x
      = checkLines xs
     | otherwise = False
@@ -51,8 +51,8 @@ funcOp (x:xs) (a, b) | x == "ra" = loop xs (opRotate a, b)
                    | otherwise = checkSort (a, b)
 
 checkSort :: ([Int], [Int]) -> IO ()
-checkSort (a, b) | a == sort a = putStrLn "OK" >> exitSuccess
-                 | otherwise = putStr "KO: " >> printTlist (a, b) 
+checkSort (a, b) | a == sort a && null b = putStrLn "OK" >> exitSuccess
+                 | otherwise = putStr "KO: " >> printTlist (a, b)
                   >> exitSuccess
 
 printTlist :: ([Int], [Int]) -> IO ()
@@ -65,13 +65,13 @@ strToTuple x = (map intInt x, [])
 
 -- Operations
 
-opRotateRev :: [Int] -> [Int]
-opRotateRev str = last str : init str
-
 opRotate :: [Int] -> [Int]
 opRotate [] = []
-opRotate [_] = []
-opRotate (x:y:xs) = reverse $ x:reverse (y:xs)
+opRotate (x:xs) = reverse $ x:reverse xs
+
+opRotateRev :: [Int] -> [Int]
+opRotateRev [] = []
+opRotateRev xs = last xs:init xs
 
 opSwap :: [Int] -> [Int]
 opSwap [] = []
