@@ -16,7 +16,7 @@ class FuncOp a where
 instance FuncOp ([Int], [Int]) where
     funcOp ("pa", x) = opPublishA x
     funcOp ("pb", x) = opPublishB x
-    funcOp ("sa", (x, y)) = (opSwap x, y) 
+    funcOp ("sa", (x, y)) = (opSwap x, y)
     funcOp ("sb", (x, y)) = (x, opSwap y)
     funcOp ("sc", (x, y)) = (opSwap x, opSwap y)
     funcOp ("ra", (x, y)) = (opRotate x, y)
@@ -27,7 +27,7 @@ instance FuncOp ([Int], [Int]) where
     funcOp ("rrr", (x, y)) = (opRotateRev x, opRotateRev y)
 
 main :: IO ()
-main = do 
+main = do
     av <- getArgs
     str <- getLine
     if checkArgs av && checkLines (words str)
@@ -41,8 +41,8 @@ checkArgs (x:xs) | isNum x && x /= "-" = checkArgs xs
 
 checkLines :: [String] -> Bool
 checkLines [] = True
-checkLines (x:xs) 
-    | myInList 
+checkLines (x:xs)
+    | myInList
     ["pa", "pb", "sa", "sb", "sc", "ra", "rb", "rr", "rra", "rrb", "rrr"] x
      = checkLines xs
     | otherwise = False
@@ -52,8 +52,8 @@ loop [] (a, b) = checkSort (a, b)
 loop (x:xs) (a, b) = loop xs $ funcOp (x, (a, b))
 
 checkSort :: ([Int], [Int]) -> IO ()
-checkSort (a, b) | a == sort a = putStrLn "OK" >> exitSuccess
-                 | otherwise = putStr "KO: " >> printTlist (a, b) 
+checkSort (a, b) | a == sort a && null b = putStrLn "OK" >> exitSuccess
+                 | otherwise = putStr "KO: " >> printTlist (a, b)
                   >> exitSuccess
 
 printTlist :: ([Int], [Int]) -> IO ()
@@ -67,12 +67,12 @@ strToTuple x = (map intInt x, [])
 -- Operations
 
 opRotateRev :: [Int] -> [Int]
-opRotateRev str = last str : init str
+opRotateRev [] = []
+opRotateRev xs = last xs:init xs
 
 opRotate :: [Int] -> [Int]
 opRotate [] = []
-opRotate [_] = []
-opRotate (x:y:xs) = reverse $ x:reverse (y:xs)
+opRotate (x:xs) = reverse $ x:reverse xs
 
 opSwap :: [Int] -> [Int]
 opSwap [] = []
