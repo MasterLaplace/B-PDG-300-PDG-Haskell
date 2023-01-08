@@ -10,22 +10,6 @@ import System.Exit (exitWith, ExitCode (..), exitSuccess)
 import My (isNum, myInList, readInt, intInt)
 import Data.List (sort)
 
-class FuncOp a where
-    funcOp :: (String, a) -> ([Int], [Int])
-
-instance FuncOp ([Int], [Int]) where
-    funcOp ("pa", x) = opPublishA x
-    funcOp ("pb", x) = opPublishB x
-    funcOp ("sa", (x, y)) = (opSwap x, y) 
-    funcOp ("sb", (x, y)) = (x, opSwap y)
-    funcOp ("sc", (x, y)) = (opSwap x, opSwap y)
-    funcOp ("ra", (x, y)) = (opRotate x, y)
-    funcOp ("rb", (x, y)) = (x, opRotate y)
-    funcOp ("rr", (x, y)) = (opRotate x, opRotate y)
-    funcOp ("rra", (x, y)) = (opRotateRev x, y)
-    funcOp ("rrb", (x, y)) = (x, opRotateRev y)
-    funcOp ("rrr", (x, y)) = (opRotateRev x, opRotateRev y)
-
 main :: IO ()
 main = do 
     av <- getArgs
@@ -49,7 +33,22 @@ checkLines (x:xs)
 
 loop :: [String] -> ([Int], [Int]) -> IO ()
 loop [] (a, b) = checkSort (a, b)
-loop (x:xs) (a, b) = loop xs $ funcOp (x, (a, b))
+loop (x:xs) (a, b) | x == "pa" = loop xs (opPublishA (a, b))
+                   | x == "pb" = loop xs (opPublishB (a, b))
+                   | x == "sa" = loop xs (opSwap a, b)
+                   | x == "sb" = loop xs (a, opSwap b)
+                   | x == "sc" = loop xs (opSwap a, opSwap b)
+                   | otherwise = funcOp (x:xs) (a, b)
+
+funcOp :: [String] -> ([Int], [Int]) -> IO ()
+funcOp [] (a, b) = checkSort (a, b)
+funcOp (x:xs) (a, b) | x == "ra" = loop xs (opRotate a, b)
+                   | x == "rb" = loop xs (a, opRotate b)
+                   | x == "rr" = loop xs (opRotate a, opRotate b)
+                   | x == "rra" = loop xs  (opRotateRev a, b)
+                   | x == "rrb" = loop xs  (a, opRotateRev b)
+                   | x == "rrr" = loop xs  (opRotateRev a, opRotateRev b)
+                   | otherwise = checkSort (a, b)
 
 checkSort :: ([Int], [Int]) -> IO ()
 checkSort (a, b) | a == sort a = putStrLn "OK" >> exitSuccess
