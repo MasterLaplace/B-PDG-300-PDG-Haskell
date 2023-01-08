@@ -5,6 +5,8 @@
 -- Game
 -}
 
+module Game where
+
 data Item = Sword | Bow | MagicWand deriving (Eq)
 
 instance Show Item where
@@ -13,8 +15,8 @@ instance Show Item where
     show MagicWand = "magic wand"
 
 data Mob = Mummy
-    | Skeleton Item 
-    | Wicth (Maybe Item)
+    | Skeleton Item
+    | Witch (Maybe Item)
     deriving (Eq)
 
 createMummy :: Mob -- a Mummy
@@ -27,10 +29,10 @@ createKnight :: Mob -- a Skeleton holding a Sword
 createKnight = Skeleton Sword
 
 createWitch :: Mob -- a Witch holding Nothing
-createWitch = Wicth Nothing
+createWitch = Witch Nothing
 
 createSorceress :: Mob -- a Witch holding a MagicWand
-createSorceress = Wicth (Just MagicWand)
+createSorceress = Witch (Just MagicWand)
 
 myStrCmp :: String -> String -> Bool
 myStrCmp [] [] = True
@@ -55,7 +57,7 @@ create _ = Nothing
 
 equip :: Item -> Mob -> Maybe Mob
 equip x (Skeleton item2) = Just (Skeleton x)
-equip x (Wicth mbItem) = Just (Wicth (Just x))
+equip x (Witch mbItem) = Just (Witch (Just x))
 equip _ _ = Nothing
 
 instance Show Mob where
@@ -63,9 +65,9 @@ instance Show Mob where
     show (Skeleton Bow) = "doomed archer"
     show (Skeleton Sword) = "dead knight"
     show (Skeleton i) = "skeleton holding a " ++ show i
-    show (Wicth Nothing) = "witch"
-    show (Wicth (Just MagicWand)) = "sorceress"
-    show (Wicth (Just i)) = "witch holding a " ++ show i
+    show (Witch Nothing) = "witch"
+    show (Witch (Just MagicWand)) = "sorceress"
+    show (Witch (Just i)) = "witch holding a " ++ show i
 
 class HasItem f where
     getItem :: f -> Maybe Item
@@ -75,5 +77,5 @@ class HasItem f where
 
 instance HasItem Mob where
     getItem (Skeleton item) = Just item
-    getItem (Wicth maybitem) = maybitem
+    getItem (Witch maybitem) = maybitem
     getItem _ = Nothing
