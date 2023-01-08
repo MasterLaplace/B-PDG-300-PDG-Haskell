@@ -5,6 +5,8 @@
 -- Tree
 -}
 
+module Tree where
+
 data Tree a = Empty | Node (Tree a) a (Tree a) deriving (Show)
 
 addInTree :: Ord a => a -> Tree a -> Tree a
@@ -18,23 +20,18 @@ instance Functor Tree where
     fmap x Empty = Empty
     fmap x (Node left up right) = Node (fmap x left) (x up) (fmap x right)
 
-myFoldr :: (a -> b -> b) -> b -> [a] -> b
-myFoldr _ x [] = x
-myFoldr lambda x (y:ys) = lambda y (myFoldr lambda x ys)
-
 listToTree :: Ord a => [a] -> Tree a
 listToTree [] = Empty
 listToTree [x] = Node Empty x Empty
-listToTree (x:xs) | x < head xs = Node (listToTree xs) x Empty
-                | otherwise = Node Empty x (listToTree xs)
+listToTree (x:xs) = addInTree x (listToTree xs)
 
-treeToList :: (Ord a) => Tree a -> [a]
+treeToList :: Ord a => Tree a -> [a]
 treeToList Empty = []
-treeToList (Node left root right) = treeToList left ++ [root] ++ treeToList right
+treeToList (Node left x right) = treeToList left ++ [x] ++ treeToList right
 
-
-treeSort :: (Ord a) => [a]-> [a]
+treeSort :: Ord a => [a]-> [a]
 treeSort x = treeToList (listToTree x)
 
 instance Foldable Tree where
-    foldMap f = foldr (\x acc -> f x <> acc) mempty
+    foldMap f Empty = mempty
+    foldMap f (Node a x b) = foldMap f a `mappend` f x `mappend` foldMap f b
