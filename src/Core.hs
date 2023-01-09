@@ -52,13 +52,11 @@ loop [] (a, b) = checkSort (a, b)
 loop (x:xs) (a, b) = loop xs $ funcOp (x, (a, b))
 
 checkSort :: ([Int], [Int]) -> IO ()
+checkSort ([], []) = return ()
 checkSort (a, b) | a == sort a && null b = putStrLn "OK" >> exitSuccess
-                 | otherwise = putStr "KO: " >> printTlist (a, b)
+                 | otherwise = putStr "KO: " >>
+                 putStrLn ('(' : (show a ++ show b) ++ ")")
                   >> exitSuccess
-
-printTlist :: ([Int], [Int]) -> IO ()
-printTlist ([], []) = return ()
-printTlist (a, b) = putStrLn ('(' : (show a ++ show b) ++ ")")
 
 strToTuple :: [String] -> ([Int], [Int])
 strToTuple [] = ([], [])
