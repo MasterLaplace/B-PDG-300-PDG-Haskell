@@ -10,6 +10,22 @@ import System.Exit (exitWith, ExitCode (..), exitSuccess)
 import My (isNum, myInList, readInt, intInt)
 import Data.List (sort)
 
+class FuncOp a where
+    funcOp :: (String, a) -> ([Int], [Int])
+
+instance FuncOp ([Int], [Int]) where
+    funcOp ("pa", x) = opPublishA x
+    funcOp ("pb", x) = opPublishB x
+    funcOp ("sa", (x, y)) = (opSwap x, y)
+    funcOp ("sb", (x, y)) = (x, opSwap y)
+    funcOp ("sc", (x, y)) = (opSwap x, opSwap y)
+    funcOp ("ra", (x, y)) = (opRotate x, y)
+    funcOp ("rb", (x, y)) = (x, opRotate y)
+    funcOp ("rr", (x, y)) = (opRotate x, opRotate y)
+    funcOp ("rra", (x, y)) = (opRotateRev x, y)
+    funcOp ("rrb", (x, y)) = (x, opRotateRev y)
+    funcOp ("rrr", (x, y)) = (opRotateRev x, opRotateRev y)
+
 main :: IO ()
 main = do
     av <- getArgs
@@ -51,13 +67,11 @@ funcOp (x:xs) (a, b) | x == "ra" = loop xs (opRotate a, b)
                    | otherwise = checkSort (a, b)
 
 checkSort :: ([Int], [Int]) -> IO ()
+checkSort ([], []) = return ()
 checkSort (a, b) | a == sort a && null b = putStrLn "OK" >> exitSuccess
-                 | otherwise = putStr "KO: " >> printTlist (a, b)
+                 | otherwise = putStr "KO: " >>
+                 putStrLn ('(' : (show a ++ show b) ++ ")")
                   >> exitSuccess
-
-printTlist :: ([Int], [Int]) -> IO ()
-printTlist ([], []) = return ()
-printTlist (a, b) = putStrLn ('(' : (show a ++ show b) ++ ")")
 
 strToTuple :: [String] -> ([Int], [Int])
 strToTuple [] = ([], [])
@@ -65,13 +79,13 @@ strToTuple x = (map intInt x, [])
 
 -- Operations
 
-opRotate :: [Int] -> [Int]
-opRotate [] = []
-opRotate (x:xs) = reverse $ x:reverse xs
-
 opRotateRev :: [Int] -> [Int]
 opRotateRev [] = []
 opRotateRev xs = last xs:init xs
+
+opRotate :: [Int] -> [Int]
+opRotate [] = []
+opRotate (x:xs) = reverse $ x:reverse xs
 
 opSwap :: [Int] -> [Int]
 opSwap [] = []
